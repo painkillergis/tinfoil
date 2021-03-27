@@ -1,4 +1,5 @@
 from collections import namedtuple
+from math import cos, radians, sin
 
 
 def render(*args):
@@ -50,4 +51,12 @@ def lerp(v1, v2, numerator, denominator):
         v1.x + (v2.x - v1.x) * numerator / denominator,
         v1.y + (v2.y - v1.y) * numerator / denominator,
         v1.z + (v2.z - v1.z) * numerator / denominator,
+    )
+
+
+def polarVertex(radius, t, z):
+    return vertex(
+        cos(radians(t)) * radius,
+        sin(radians(t)) * radius,
+        z,
     )

@@ -1,4 +1,5 @@
 from stl import *
+from pytest import approx
 
 
 def test_vertex():
@@ -51,3 +52,10 @@ def test_subdivide():
             vertex(1, 2, 0),
         ),
     )
+
+
+def test_polarVertex():
+    assert polarVertex(1, 0, 128) == vertex(1, 0, 128)
+    assert polarVertex(2, 90, 64) == vertex(approx(0), 2, 64)
+    assert polarVertex(4, 180, 32) == vertex(-4, approx(0), 32)
+    assert polarVertex(8, 270, 16) == vertex(approx(0), -8, 16)
