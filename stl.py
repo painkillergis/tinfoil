@@ -2,10 +2,10 @@ from collections import namedtuple
 
 
 def render(*args):
-    return "\n".join(map(renderSingle, args))
+    return "\n".join(map(renderNode, args))
 
 
-def renderSingle(arg):
+def renderNode(arg):
     if type(arg) is list:
         return render(*arg)
     elif type(arg) is str:
