@@ -29,9 +29,9 @@ def test_quad():
     )
 
 
-def test_subdivide():
+def test_subdivideQuads():
     assert render(
-        subdivide(
+        subdivideQuads(
             vertex(0, 0, 0),
             vertex(2, 0, 0),
             vertex(2, 2, 0),
