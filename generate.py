@@ -9,15 +9,15 @@ args = parser.parse_args()
 radius = sqrt(3) * 2 / 3
 height = 0.25
 
-facets = render(
+facets = render([
     subdivide(
-        polarVertex(radius, 0, -height / 2),
-        polarVertex(radius, 120, -height / 2),
-        polarVertex(radius, 120, height / 2),
-        polarVertex(radius, 0, height / 2),
+        polarVertex(radius, t, -height / 2),
+        polarVertex(radius, t + 120, -height / 2),
+        polarVertex(radius, t + 120, height / 2),
+        polarVertex(radius, t, height / 2),
         72,
-    ),
-)
+    ) for t in range(0, 360, 120)
+])
 
 with open(args.destination, "w") as f:
     f.write(f"""solid sample
