@@ -1,11 +1,11 @@
 from stl import *
 
 
-def test_render_vertex():
+def test_vertex():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
 
-def test_render_triangle():
+def test_triangle():
     assert render(
         triangle(
             vertex(1, 2, 3),
@@ -21,8 +21,8 @@ def test_render_triangle():
 endfacet"""
 
 
-def test_rectangle():
-    assert render(rectangle("a", "b", "c", "d")) == render(
+def test_quad():
+    assert render(quad("a", "b", "c", "d")) == render(
         triangle("a", "b", "c"),
         triangle("a", "c", "d"),
     )
@@ -38,13 +38,13 @@ def test_subdivide():
             2,
         ),
     ) == render(
-        rectangle(
+        quad(
             vertex(0, 0, 0),
             vertex(1, 0, 0),
             vertex(1, 2, 0),
             vertex(0, 2, 0),
         ),
-        rectangle(
+        quad(
             vertex(1, 0, 0),
             vertex(2, 0, 0),
             vertex(2, 2, 0),

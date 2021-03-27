@@ -27,7 +27,7 @@ def triangle(v1, v2, v3):
 endfacet"""
 
 
-def rectangle(v1, v2, v3, v4):
+def quad(v1, v2, v3, v4):
     return [
         triangle(v1, v2, v3),
         triangle(v1, v3, v4),
@@ -36,7 +36,7 @@ def rectangle(v1, v2, v3, v4):
 
 def subdivide(v1, v2, v3, v4, numberOfCuts):
     return [
-        rectangle(
+        quad(
             lerp(v1, v2, a, numberOfCuts),
             lerp(v1, v2, a + 1, numberOfCuts),
             lerp(v4, v3, a + 1, numberOfCuts),
