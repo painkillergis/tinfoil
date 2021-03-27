@@ -3,4 +3,4 @@ def render(string):
 
 
 def vertex(x, y, z):
-    return "vertex 1 2 3"
+    return f"vertex {x} {y} {z}"
