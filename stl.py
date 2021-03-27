@@ -1,5 +1,12 @@
-def render(string):
-    return string
+def render(*args):
+    return "\n".join(
+        map(
+            lambda arg: render(*arg)
+            if type(arg) is list
+            else arg,
+            args,
+        )
+    )
 
 
 def vertex(x, y, z):
@@ -14,3 +21,10 @@ def triangle(v1, v2, v3):
     {v3}
   endloop
 endfacet"""
+
+
+def rectangle(v1, v2, v3, v4):
+    return [
+        triangle(v1, v2, v3),
+        triangle(v1, v3, v4),
+    ]

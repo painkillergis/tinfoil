@@ -5,10 +5,6 @@ def test_render_vertex():
     assert render(vertex(1, 2, 3)) == "vertex 1 2 3"
 
 
-def test_vertex():
-    assert vertex(1, 2, 3) != vertex(3, 2, 1)
-
-
 def test_render_triangle():
     assert render(
         triangle(
@@ -23,3 +19,10 @@ def test_render_triangle():
     vertex 7 8 9
   endloop
 endfacet"""
+
+
+def test_rectangle():
+    assert render(rectangle("a", "b", "c", "d")) == render(
+        triangle("a", "b", "c"),
+        triangle("a", "c", "d"),
+    )
