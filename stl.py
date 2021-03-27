@@ -1,24 +1,28 @@
+from collections import namedtuple
+
+
 def render(*args):
-    return "\n".join(
-        map(
-            lambda arg: render(*arg)
-            if type(arg) is list
-            else arg,
-            args,
-        )
-    )
+    return "\n".join(map(renderSingle, args))
 
 
-def vertex(x, y, z):
-    return f"vertex {float(x)} {float(y)} {float(z)}"
+def renderSingle(arg):
+    if type(arg) is list:
+        return render(*arg)
+    elif type(arg) is str:
+        return arg
+    else:
+        return f"vertex {float(arg.x)} {float(arg.y)} {float(arg.z)}"
+
+
+vertex = namedtuple("vertex", ["x", "y", "z"])
 
 
 def triangle(v1, v2, v3):
     return f"""facet normal 0 0 0
   outer loop
-    {v1}
-    {v2}
-    {v3}
+    {render(v1)}
+    {render(v2)}
+    {render(v3)}
   endloop
 endfacet"""
 
@@ -28,3 +32,22 @@ def rectangle(v1, v2, v3, v4):
         triangle(v1, v2, v3),
         triangle(v1, v3, v4),
     ]
+
+
+def subdivide(v1, v2, v3, v4, numberOfCuts):
+    return [
+        rectangle(
+            lerp(v1, v2, a, numberOfCuts),
+            lerp(v1, v2, a + 1, numberOfCuts),
+            lerp(v4, v3, a + 1, numberOfCuts),
+            lerp(v4, v3, a, numberOfCuts),
+        ) for a in range(numberOfCuts)
+    ]
+
+
+def lerp(v1, v2, numerator, denominator):
+    return vertex(
+        v1.x + (v2.x - v1.x) * numerator / denominator,
+        v1.y + (v2.y - v1.y) * numerator / denominator,
+        v1.z + (v2.z - v1.z) * numerator / denominator,
+    )

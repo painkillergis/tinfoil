@@ -26,3 +26,28 @@ def test_rectangle():
         triangle("a", "b", "c"),
         triangle("a", "c", "d"),
     )
+
+
+def test_subdivide():
+    assert render(
+        subdivide(
+            vertex(0, 0, 0),
+            vertex(2, 0, 0),
+            vertex(2, 2, 0),
+            vertex(0, 2, 0),
+            2,
+        ),
+    ) == render(
+        rectangle(
+            vertex(0, 0, 0),
+            vertex(1, 0, 0),
+            vertex(1, 2, 0),
+            vertex(0, 2, 0),
+        ),
+        rectangle(
+            vertex(1, 0, 0),
+            vertex(2, 0, 0),
+            vertex(2, 2, 0),
+            vertex(1, 2, 0),
+        ),
+    )
