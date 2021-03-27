@@ -2,7 +2,7 @@ from stl import *
 
 
 def test_render_vertex():
-    assert render(vertex(1, 2, 3)) == "vertex 1 2 3"
+    assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
 
 def test_render_triangle():
@@ -14,9 +14,9 @@ def test_render_triangle():
         ),
     ) == """facet normal 0 0 0
   outer loop
-    vertex 1 2 3
-    vertex 4 5 6
-    vertex 7 8 9
+    vertex 1.0 2.0 3.0
+    vertex 4.0 5.0 6.0
+    vertex 7.0 8.0 9.0
   endloop
 endfacet"""
 

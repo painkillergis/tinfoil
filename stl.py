@@ -10,7 +10,7 @@ def render(*args):
 
 
 def vertex(x, y, z):
-    return f"vertex {x} {y} {z}"
+    return f"vertex {float(x)} {float(y)} {float(z)}"
 
 
 def triangle(v1, v2, v3):
