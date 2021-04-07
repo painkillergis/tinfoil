@@ -1,5 +1,6 @@
-from stl import *
 from pytest import approx
+
+from stl import *
 
 
 def test_vertex():
@@ -59,3 +60,43 @@ def test_polarVertex():
     assert polarVertex(2, 90, 64) == vertex(approx(0), 2, 64)
     assert polarVertex(4, 180, 32) == vertex(-4, approx(0), 32)
     assert polarVertex(8, 270, 16) == vertex(approx(0), -8, 16)
+
+
+def test_subdivide():
+    assert subdivide(
+        vertex(0, 0, 1),
+        vertex(6, 0, 1),
+        vertex(0, 6, 1),
+        2,
+    ) == [
+               triangle(
+                   vertex(0, 0, 1),
+                   vertex(2, 0, 1),
+                   vertex(0, 2, 1),
+               ),
+               triangle(
+                   vertex(2, 0, 1),
+                   vertex(4, 0, 1),
+                   vertex(2, 2, 1),
+               ),
+               triangle(
+                   vertex(4, 0, 1),
+                   vertex(6, 0, 1),
+                   vertex(4, 2, 1),
+               ),
+               triangle(
+                   vertex(0, 2, 1),
+                   vertex(2, 2, 1),
+                   vertex(0, 4, 1),
+               ),
+               triangle(
+                   vertex(2, 2, 1),
+                   vertex(4, 2, 1),
+                   vertex(2, 4, 1),
+               ),
+               triangle(
+                   vertex(0, 4, 1),
+                   vertex(2, 4, 1),
+                   vertex(0, 6, 1),
+               ),
+           ]

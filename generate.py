@@ -19,7 +19,8 @@ facets = render(
             72,
         ) for t in range(0, 360, 120)
     ],
-    triangle(*[polarVertex(radius, t, -height / 2) for t in range(0, 360, 120)])
+    triangle(*[polarVertex(radius, t, -height / 2) for t in range(0, 360, 120)]),
+    subdivide(*[polarVertex(radius, t, height / 2) for t in range(0, 360, 120)], 10),
 )
 
 with open(args.destination, "w") as f:

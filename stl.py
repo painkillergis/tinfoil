@@ -60,3 +60,54 @@ def polarVertex(radius, t, z):
         sin(radians(t)) * radius,
         z,
     )
+
+
+def subdivide(v1, v2, v3, numberOfCuts):
+    xDeltaVector = divideVectorByScalar(subtractVectors(v2, v1), numberOfCuts + 1)
+    yDeltaVector = divideVectorByScalar(subtractVectors(v3, v1), numberOfCuts + 1)
+    result = []
+    for y in range(numberOfCuts + 1):
+        for x in range(numberOfCuts + 1 - y):
+            result.append(
+                triangle(
+                    addVectors(
+                        v1,
+                        multiplyVectorByScalar(xDeltaVector, x),
+                        multiplyVectorByScalar(yDeltaVector, y)
+                    ),
+                    addVectors(
+                        v1,
+                        multiplyVectorByScalar(xDeltaVector, x + 1),
+                        multiplyVectorByScalar(yDeltaVector, y),
+                    ),
+                    addVectors(
+                        v1,
+                        multiplyVectorByScalar(xDeltaVector, x),
+                        multiplyVectorByScalar(yDeltaVector, y + 1),
+                    ),
+                )
+            )
+    return result
+
+
+def divideVectorByScalar(vector, scalar):
+    return vertex(vector.x / scalar, vector.y / scalar, vector.z / scalar)
+
+
+def subtractVectors(v1, v2):
+    return vertex(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
+
+
+def addVectors(*vs):
+    x = 0
+    y = 0
+    z = 0
+    for v in vs:
+        x += v.x
+        y += v.y
+        z += v.z
+    return vertex(x, y, z)
+
+
+def multiplyVectorByScalar(vector, scalar):
+    return vertex(vector.x * scalar, vector.y * scalar, vector.z * scalar)
