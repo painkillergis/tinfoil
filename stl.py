@@ -11,21 +11,21 @@ def renderNode(arg):
         return render(*arg)
     elif type(arg) is str:
         return arg
-    else:
+    elif type(arg).__name__ == "vertex":
         return f"vertex {float(arg.x)} {float(arg.y)} {float(arg.z)}"
+    elif type(arg).__name__ == "tri":
+        return f"""facet normal 0 0 0
+  outer loop
+    {render(arg.v1)}
+    {render(arg.v2)}
+    {render(arg.v3)}
+  endloop
+endfacet"""
 
 
 vertex = namedtuple("vertex", ["x", "y", "z"])
 
-
-def triangle(v1, v2, v3):
-    return f"""facet normal 0 0 0
-  outer loop
-    {render(v1)}
-    {render(v2)}
-    {render(v3)}
-  endloop
-endfacet"""
+triangle = namedtuple("tri", ["v1", "v2", "v3"])
 
 
 def quad(v1, v2, v3, v4):
