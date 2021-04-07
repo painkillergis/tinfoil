@@ -76,7 +76,17 @@ def test_subdivide():
                ),
                triangle(
                    vertex(2, 0, 1),
+                   vertex(2, 2, 1),
+                   vertex(0, 2, 1),
+               ),
+               triangle(
+                   vertex(2, 0, 1),
                    vertex(4, 0, 1),
+                   vertex(2, 2, 1),
+               ),
+               triangle(
+                   vertex(4, 0, 1),
+                   vertex(4, 2, 1),
                    vertex(2, 2, 1),
                ),
                triangle(
@@ -87,6 +97,11 @@ def test_subdivide():
                triangle(
                    vertex(0, 2, 1),
                    vertex(2, 2, 1),
+                   vertex(0, 4, 1),
+               ),
+               triangle(
+                   vertex(2, 2, 1),
+                   vertex(2, 4, 1),
                    vertex(0, 4, 1),
                ),
                triangle(

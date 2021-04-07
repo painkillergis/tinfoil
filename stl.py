@@ -87,6 +87,27 @@ def subdivide(v1, v2, v3, numberOfCuts):
                     ),
                 )
             )
+            if x + y < numberOfCuts:
+                result.append(
+                    triangle(
+                        addVectors(
+                            v1,
+                            multiplyVectorByScalar(xDeltaVector, x + 1),
+                            multiplyVectorByScalar(yDeltaVector, y),
+                        ),
+                        addVectors(
+                            v1,
+                            multiplyVectorByScalar(xDeltaVector, x + 1),
+                            multiplyVectorByScalar(yDeltaVector, y + 1),
+                        ),
+                        addVectors(
+                            v1,
+                            multiplyVectorByScalar(xDeltaVector, x),
+                            multiplyVectorByScalar(yDeltaVector, y + 1),
+                        ),
+                    )
+                )
+
     return result
 
 
