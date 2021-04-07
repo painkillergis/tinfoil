@@ -62,56 +62,85 @@ def test_polarVertex():
     assert polarVertex(8, 270, 16) == vertex(approx(0), -8, 16)
 
 
-def test_subdivide():
-    assert subdivide(
+def test_subdividePoints():
+    assert subdividePoints(
+        3,
         vertex(0, 0, 1),
-        vertex(6, 0, 1),
-        vertex(0, 6, 1),
-        2,
+        vertex(3, 0, 1),
+        vertex(0, 3, 1),
+    ) == [
+               vertex(0, 0, 1),
+               vertex(1, 0, 1),
+               vertex(2, 0, 1),
+               vertex(3, 0, 1),
+               vertex(0, 1, 1),
+               vertex(1, 1, 1),
+               vertex(2, 1, 1),
+               vertex(0, 2, 1),
+               vertex(1, 2, 1),
+               vertex(0, 3, 1),
+           ]
+
+
+def test_trianglesFromSubdivisionPoints():
+    assert trianglesFromSubdivisionPoints(
+        3,
+        [
+            vertex(0, 0, 1),
+            vertex(1, 0, 1),
+            vertex(2, 0, 1),
+            vertex(3, 0, 1),
+            vertex(0, 1, 1),
+            vertex(1, 1, 1),
+            vertex(2, 1, 1),
+            vertex(0, 2, 1),
+            vertex(1, 2, 1),
+            vertex(0, 3, 1),
+        ],
     ) == [
                triangle(
                    vertex(0, 0, 1),
+                   vertex(1, 0, 1),
+                   vertex(0, 1, 1),
+               ),
+               triangle(
+                   vertex(1, 0, 1),
                    vertex(2, 0, 1),
+                   vertex(1, 1, 1),
+               ),
+               triangle(
+                   vertex(2, 0, 1),
+                   vertex(3, 0, 1),
+                   vertex(2, 1, 1),
+               ),
+               triangle(
+                   vertex(0, 1, 1),
+                   vertex(1, 1, 1),
                    vertex(0, 2, 1),
                ),
                triangle(
-                   vertex(2, 0, 1),
-                   vertex(2, 2, 1),
-                   vertex(0, 2, 1),
-               ),
-               triangle(
-                   vertex(2, 0, 1),
-                   vertex(4, 0, 1),
-                   vertex(2, 2, 1),
-               ),
-               triangle(
-                   vertex(4, 0, 1),
-                   vertex(4, 2, 1),
-                   vertex(2, 2, 1),
-               ),
-               triangle(
-                   vertex(4, 0, 1),
-                   vertex(6, 0, 1),
-                   vertex(4, 2, 1),
+                   vertex(1, 1, 1),
+                   vertex(2, 1, 1),
+                   vertex(1, 2, 1),
                ),
                triangle(
                    vertex(0, 2, 1),
-                   vertex(2, 2, 1),
-                   vertex(0, 4, 1),
+                   vertex(1, 2, 1),
+                   vertex(0, 3, 1),
                ),
                triangle(
-                   vertex(2, 2, 1),
-                   vertex(2, 4, 1),
-                   vertex(0, 4, 1),
+                   vertex(1, 0, 1),
+                   vertex(1, 1, 1),
+                   vertex(0, 1, 1),
                ),
                triangle(
-                   vertex(2, 2, 1),
-                   vertex(4, 2, 1),
-                   vertex(2, 4, 1),
+                   vertex(2, 0, 1),
+                   vertex(2, 1, 1),
+                   vertex(1, 1, 1),
                ),
                triangle(
-                   vertex(0, 4, 1),
-                   vertex(2, 4, 1),
-                   vertex(0, 6, 1),
+                   vertex(1, 1, 1),
+                   vertex(1, 2, 1),
+                   vertex(0, 2, 1),
                ),
            ]

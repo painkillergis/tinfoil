@@ -62,53 +62,20 @@ def polarVertex(radius, t, z):
     )
 
 
-def subdivide(v1, v2, v3, numberOfCuts):
-    xDeltaVector = divideVectorByScalar(subtractVectors(v2, v1), numberOfCuts + 1)
-    yDeltaVector = divideVectorByScalar(subtractVectors(v3, v1), numberOfCuts + 1)
-    result = []
-    for y in range(numberOfCuts + 1):
-        for x in range(numberOfCuts + 1 - y):
-            result.append(
-                triangle(
-                    addVectors(
-                        v1,
-                        multiplyVectorByScalar(xDeltaVector, x),
-                        multiplyVectorByScalar(yDeltaVector, y)
-                    ),
-                    addVectors(
-                        v1,
-                        multiplyVectorByScalar(xDeltaVector, x + 1),
-                        multiplyVectorByScalar(yDeltaVector, y),
-                    ),
-                    addVectors(
-                        v1,
-                        multiplyVectorByScalar(xDeltaVector, x),
-                        multiplyVectorByScalar(yDeltaVector, y + 1),
-                    ),
+def subdividePoints(pointsPerSide, v1, v2, v3):
+    xDeltaVector = divideVectorByScalar(subtractVectors(v2, v1), pointsPerSide)
+    yDeltaVector = divideVectorByScalar(subtractVectors(v3, v1), pointsPerSide)
+    results = []
+    for y in range(pointsPerSide + 1):
+        for x in range(pointsPerSide + 1 - y):
+            results.append(
+                addVectors(
+                    v1,
+                    multiplyVectorByScalar(xDeltaVector, x),
+                    multiplyVectorByScalar(yDeltaVector, y)
                 )
             )
-            if x + y < numberOfCuts:
-                result.append(
-                    triangle(
-                        addVectors(
-                            v1,
-                            multiplyVectorByScalar(xDeltaVector, x + 1),
-                            multiplyVectorByScalar(yDeltaVector, y),
-                        ),
-                        addVectors(
-                            v1,
-                            multiplyVectorByScalar(xDeltaVector, x + 1),
-                            multiplyVectorByScalar(yDeltaVector, y + 1),
-                        ),
-                        addVectors(
-                            v1,
-                            multiplyVectorByScalar(xDeltaVector, x),
-                            multiplyVectorByScalar(yDeltaVector, y + 1),
-                        ),
-                    )
-                )
-
-    return result
+    return results
 
 
 def divideVectorByScalar(vector, scalar):
@@ -132,3 +99,28 @@ def addVectors(*vs):
 
 def multiplyVectorByScalar(vector, scalar):
     return vertex(vector.x * scalar, vector.y * scalar, vector.z * scalar)
+
+
+def trianglesFromSubdivisionPoints(pointsPerSide, points):
+    getPoint = lambda x, y: points[y * ((pointsPerSide - 1) * 2 - y + 5) // 2 + x]
+
+    results = []
+    for y in range(pointsPerSide):
+        for x in range(pointsPerSide - y):
+            results.append(
+                triangle(
+                    getPoint(x, y),
+                    getPoint(x + 1, y),
+                    getPoint(x, y + 1),
+                )
+            )
+    for y in range(pointsPerSide - 1):
+        for x in range(pointsPerSide - 1 - y):
+            results.append(
+                triangle(
+                    getPoint(x + 1, y),
+                    getPoint(x + 1, y + 1),
+                    getPoint(x, y + 1),
+                )
+            )
+    return results
