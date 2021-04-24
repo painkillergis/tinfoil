@@ -1,0 +1,2 @@
+#!/bin/sh
+nodemon -e py -x "python -m pytest || exit 1"
