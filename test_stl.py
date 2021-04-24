@@ -13,6 +13,12 @@ def flatten(args):
     return result
 
 
+def test_solid():
+    assert render(solid("something", ["facets"])) == """solid something
+facets
+endsolid something"""
+
+
 def test_vertex():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 

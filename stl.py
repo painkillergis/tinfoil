@@ -26,6 +26,10 @@ endfacet"""
             triangle(arg.v1, arg.v2, arg.v3),
             triangle(arg.v1, arg.v3, arg.v4),
         ])
+    elif type(arg).__name__ == "solid":
+        return f"""solid {arg.name}
+{render(arg.facets)}
+endsolid {arg.name}"""
 
 
 vertex = namedtuple("vertex", ["x", "y", "z"])
@@ -33,6 +37,8 @@ vertex = namedtuple("vertex", ["x", "y", "z"])
 triangle = namedtuple("tri", ["v1", "v2", "v3"])
 
 quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
+
+solid = namedtuple("solid", ["name", "facets"])
 
 
 def subdivideQuads(v1, v2, v3, v4, numberOfCuts):
