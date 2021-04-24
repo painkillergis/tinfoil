@@ -30,9 +30,9 @@ def test_quad():
     )
 
 
-def test_subdivideQuads():
+def test_ladderSubdivideQuads():
     assert render(
-        subdivideQuads(
+        ladderSubdivideQuads(
             vertex(0, 0, 0),
             vertex(2, 0, 0),
             vertex(2, 2, 0),

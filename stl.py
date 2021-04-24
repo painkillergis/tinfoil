@@ -35,7 +35,7 @@ def quad(v1, v2, v3, v4):
     ]
 
 
-def subdivideQuads(v1, v2, v3, v4, numberOfCuts):
+def ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts):
     return [
         quad(
             lerp(v1, v2, a, numberOfCuts),

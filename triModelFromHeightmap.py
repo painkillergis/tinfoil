@@ -12,7 +12,7 @@ height = 0.25
 
 facets = render(
     [
-        subdivideQuads(
+        ladderSubdivideQuads(
             polarVertex(radius, t, -height / 2),
             polarVertex(radius, t + 120, -height / 2),
             polarVertex(radius, t + 120, height / 2),
