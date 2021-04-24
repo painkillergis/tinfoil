@@ -21,18 +21,18 @@ def renderNode(arg):
     {render(arg.v3)}
   endloop
 endfacet"""
+    elif type(arg).__name__ == "quad":
+        return render([
+            triangle(arg.v1, arg.v2, arg.v3),
+            triangle(arg.v1, arg.v3, arg.v4),
+        ])
 
 
 vertex = namedtuple("vertex", ["x", "y", "z"])
 
 triangle = namedtuple("tri", ["v1", "v2", "v3"])
 
-
-def quad(v1, v2, v3, v4):
-    return [
-        triangle(v1, v2, v3),
-        triangle(v1, v3, v4),
-    ]
+quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
 
 
 def ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts):
