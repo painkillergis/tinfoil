@@ -137,7 +137,3 @@ def trianglesFromSubdivisionPoints(pointsPerSide, points):
                 )
             )
     return results
-
-
-def sampleZ(source, points):
-    return points

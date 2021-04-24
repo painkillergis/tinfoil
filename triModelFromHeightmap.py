@@ -26,13 +26,10 @@ contents = render(
             triangle(*[polarVertex(radius, t, -height / 2) for t in range(0, 360, 120)]),
             trianglesFromSubdivisionPoints(
                 10,
-                sampleZ(
-                    args.source,
-                    subdividePoints(
-                        10,
-                        *[polarVertex(radius, t, height / 2) for t in range(0, 360, 120)],
-                    ),
-                )
+                subdividePoints(
+                    10,
+                    *[polarVertex(radius, t, height / 2) for t in range(0, 360, 120)],
+                ),
             ),
         ]
     )
