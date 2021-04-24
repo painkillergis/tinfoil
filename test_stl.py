@@ -71,9 +71,9 @@ def test_ladderSubdivideQuads():
     )
 
 
-def test_subdivideQuads():
+def test_quadSubdivision():
     assert flatten(
-        subdivideQuads(
+        quadSubdivision(
             vertex(0, 0, 0),
             vertex(2, 0, 0),
             vertex(2, 2, 0),

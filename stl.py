@@ -41,7 +41,7 @@ quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
 solid = namedtuple("solid", ["name", "facets"])
 
 
-def subdivideQuads(v1, v2, v3, v4, numberOfCuts):
+def quadSubdivision(v1, v2, v3, v4, numberOfCuts):
     return [
         ladderSubdivideQuads(quad.v1, quad.v4, quad.v3, quad.v2, numberOfCuts)
         for quad in ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts)
