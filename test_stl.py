@@ -3,6 +3,16 @@ from pytest import approx
 from stl import *
 
 
+def flatten(args):
+    result = []
+    for arg in args:
+        if type(arg) is list:
+            result += flatten(arg)
+        else:
+            result.append(arg)
+    return result
+
+
 def test_vertex():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
@@ -53,6 +63,43 @@ def test_ladderSubdivideQuads():
             vertex(1, 2, 0),
         ),
     )
+
+
+def test_subdivideQuads():
+    assert flatten(
+        subdivideQuads(
+            vertex(0, 0, 0),
+            vertex(2, 0, 0),
+            vertex(2, 2, 0),
+            vertex(0, 2, 0),
+            2,
+        )
+    ) == [
+               quad(
+                   vertex(0, 0, 0),
+                   vertex(0, 1, 0),
+                   vertex(1, 1, 0),
+                   vertex(1, 0, 0),
+               ),
+               quad(
+                   vertex(0, 1, 0),
+                   vertex(0, 2, 0),
+                   vertex(1, 2, 0),
+                   vertex(1, 1, 0),
+               ),
+               quad(
+                   vertex(1, 0, 0),
+                   vertex(1, 1, 0),
+                   vertex(2, 1, 0),
+                   vertex(2, 0, 0),
+               ),
+               quad(
+                   vertex(1, 1, 0),
+                   vertex(1, 2, 0),
+                   vertex(2, 2, 0),
+                   vertex(2, 1, 0),
+               ),
+           ]
 
 
 def test_polarVertex():

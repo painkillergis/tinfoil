@@ -35,6 +35,13 @@ triangle = namedtuple("tri", ["v1", "v2", "v3"])
 quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
 
 
+def subdivideQuads(v1, v2, v3, v4, numberOfCuts):
+    return [
+        ladderSubdivideQuads(quad.v1, quad.v4, quad.v3, quad.v2, numberOfCuts)
+        for quad in ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts)
+    ]
+
+
 def ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts):
     return [
         quad(
