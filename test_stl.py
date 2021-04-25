@@ -1,4 +1,5 @@
 from pytest import approx
+import pytest
 
 from stl import *
 
@@ -13,8 +14,18 @@ def flatten(args):
     return result
 
 
-def test_vertex():
+def test_vertex_render():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
+
+
+def test_vertex_multiply_scalar():
+    assert vertex(1, 2, 3) * 2 == vertex(2, 4, 6)
+
+
+def test_vertex_multiply_unknown():
+    with pytest.raises(ValueError) as error:
+        vertex(1, 2, 3) * "bad"
+    assert str(error.value) == "unsupported operand type(s) for *: 'vertex' and 'str'"
 
 
 def test_triangle():

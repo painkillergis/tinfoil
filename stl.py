@@ -1,3 +1,4 @@
+import numbers
 from abc import ABCMeta, abstractmethod
 from math import cos, radians, sin
 
@@ -48,6 +49,12 @@ class vertex(Renderable, EqualityMixin):
 
     def render(self):
         return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
+
+    def __mul__(self, other):
+        if isinstance(other, numbers.Number):
+            return vertex(self.x * other, self.y * other, self.z * other)
+        else:
+            raise ValueError(f"unsupported operand type(s) for *: 'vertex' and '{type(other).__name__}'")
 
 
 class triangle(Renderable, EqualityMixin):
@@ -142,8 +149,8 @@ def subdividePoints(pointsPerSide, v1, v2, v3):
             results.append(
                 addVectors(
                     v1,
-                    multiplyVectorByScalar(xDeltaVector, x),
-                    multiplyVectorByScalar(yDeltaVector, y)
+                    xDeltaVector * x,
+                    yDeltaVector * y,
                 )
             )
     return results
@@ -166,10 +173,6 @@ def addVectors(*vs):
         y += v.y
         z += v.z
     return vertex(x, y, z)
-
-
-def multiplyVectorByScalar(vector, scalar):
-    return vertex(vector.x * scalar, vector.y * scalar, vector.z * scalar)
 
 
 def trianglesFromSubdivisionPoints(pointsPerSide, points):
