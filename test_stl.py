@@ -120,8 +120,32 @@ def test_ladderSubdivideQuads():
     )
 
 
-def test_planeSubdivision():
-    assert planeSubdivision(2) == fragment(
+def test_planeSubdivisionPoints():
+    assert planeSubdivisionPoints(2) == [
+        vertex(-1, -1, 0),
+        vertex(0, -1, 0),
+        vertex(1, -1, 0),
+        vertex(-1, 0, 0),
+        vertex(0, 0, 0),
+        vertex(1, 0, 0),
+        vertex(-1, 1, 0),
+        vertex(0, 1, 0),
+        vertex(1, 1, 0),
+    ]
+
+
+def test_quadsFromPlaneSubdivisionPoints():
+    assert quadsFromPlaneSubdivisionPoints([
+        vertex(-1, -1, 0),
+        vertex(0, -1, 0),
+        vertex(1, -1, 0),
+        vertex(-1, 0, 0),
+        vertex(0, 0, 0),
+        vertex(1, 0, 0),
+        vertex(-1, 1, 0),
+        vertex(0, 1, 0),
+        vertex(1, 1, 0),
+    ]) == fragment(
         quad(
             vertex(-1, -1, 0),
             vertex(0, -1, 0),

@@ -1,6 +1,6 @@
 import numbers
 from abc import ABCMeta, abstractmethod
-from math import cos, radians, sin
+from math import cos, radians, sin, sqrt, floor
 
 
 def render(*args):
@@ -99,24 +99,27 @@ class solid(Renderable, EqualityMixin):
 endsolid {self.name}"""
 
 
-def planeSubdivision(numberOfCuts):
+def planeSubdivisionPoints(numberOfCuts):
     xDeltaVector = vertex(2, 0, 0) / numberOfCuts
     yDeltaVector = vertex(0, 2, 0) / numberOfCuts
-    numberOfPointsPerSide = numberOfCuts + 2
-    points = [
+    return [
         vertex(-1, -1, 0) + yDeltaVector * y + xDeltaVector * x
-        for x in range(numberOfPointsPerSide)
-        for y in range(numberOfPointsPerSide)
+        for y in range(numberOfCuts + 1)
+        for x in range(numberOfCuts + 1)
     ]
+
+
+def quadsFromPlaneSubdivisionPoints(points):
+    numberOfPointsPerSide = floor(sqrt(len(points)))
     return fragment(*[
         quad(
-            points[x * numberOfPointsPerSide + y],
-            points[(x + 1) * numberOfPointsPerSide + y],
-            points[(x + 1) * numberOfPointsPerSide + (y + 1)],
-            points[x * numberOfPointsPerSide + (y + 1)],
+            points[x + y * numberOfPointsPerSide],
+            points[(x + 1) + y * numberOfPointsPerSide],
+            points[(x + 1) + (y + 1) * numberOfPointsPerSide],
+            points[x + (y + 1) * numberOfPointsPerSide],
         )
-        for y in range(numberOfCuts)
-        for x in range(numberOfCuts)
+        for y in range(numberOfPointsPerSide - 1)
+        for x in range(numberOfPointsPerSide - 1)
     ])
 
 
