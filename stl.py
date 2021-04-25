@@ -55,6 +55,8 @@ class vertex(Renderable, EqualityMixin):
     def __mul__(self, other):
         if isinstance(other, numbers.Number):
             return vertex(self.x * other, self.y * other, self.z * other)
+        if isinstance(other, vertex):
+            return vertex(self.x * other.x, self.y * other.y, self.z * other.z)
         else:
             raise ValueError(f"unsupported operand type(s) for *: 'vertex' and '{type(other).__name__}'")
 

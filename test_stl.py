@@ -12,6 +12,16 @@ def test_vertex_multiply_scalar():
     assert vertex(1, 2, 3) * 2 == vertex(2, 4, 6)
 
 
+def test_vertex_multiply_vertex():
+    assert vertex(1, 2, 4) * vertex(8, 16, 32) == vertex(8, 32, 128)
+
+
+def test_vertex_multiply_unknown():
+    with pytest.raises(ValueError) as error:
+        vertex(1, 2, 3) * "bad"
+    assert str(error.value) == "unsupported operand type(s) for *: 'vertex' and 'str'"
+
+
 def test_vertex_add_vertex():
     assert vertex(1, 2, 4) + vertex(8, 16, 32) == vertex(9, 18, 36)
 
@@ -30,12 +40,6 @@ def test_vertex_subtract_unknown():
     with pytest.raises(ValueError) as error:
         vertex(1, 2, 4) - "str"
     assert str(error.value) == "unsupported operand type(s) for -: 'vertex' and 'str'"
-
-
-def test_vertex_multiply_unknown():
-    with pytest.raises(ValueError) as error:
-        vertex(1, 2, 3) * "bad"
-    assert str(error.value) == "unsupported operand type(s) for *: 'vertex' and 'str'"
 
 
 def test_vertex_divide_scalar():
