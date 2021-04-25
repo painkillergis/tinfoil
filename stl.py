@@ -1,5 +1,6 @@
 from collections import namedtuple
 from math import cos, radians, sin
+from abc import ABCMeta, abstractmethod
 
 
 def render(*args):
@@ -11,8 +12,8 @@ def renderNode(arg):
         return render(*arg)
     elif type(arg) is str:
         return arg
-    elif type(arg).__name__ == "vertex":
-        return f"vertex {float(arg.x)} {float(arg.y)} {float(arg.z)}"
+    elif isinstance(arg, Renderable):
+        return arg.render()
     elif type(arg).__name__ == "tri":
         return f"""facet normal 0 0 0
   outer loop
@@ -32,7 +33,31 @@ endfacet"""
 endsolid {arg.name}"""
 
 
-vertex = namedtuple("vertex", ["x", "y", "z"])
+class EqualityMixin:
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return str(self.__class__.__name__) + "{" + ", ".join(
+            [f"{key}={value}" for key, value in self.__dict__.items()]) + "}"
+
+
+class Renderable:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def render(self): raise NotImplementedError
+
+
+class vertex(Renderable, EqualityMixin):
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def render(self):
+        return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
+
 
 triangle = namedtuple("tri", ["v1", "v2", "v3"])
 
