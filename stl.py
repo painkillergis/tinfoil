@@ -117,15 +117,15 @@ endsolid {self.name}"""
 
 
 class planeSubdivision(RenderableAncestor, EqualityMixin):
-    def __init__(self, v1, v2, v3, v4, numberOfCuts):
-        xDeltaVector = (v2 - v1) / numberOfCuts
-        yDeltaVector = (v4 - v1) / numberOfCuts
+    def __init__(self, numberOfCuts):
+        xDeltaVector = vertex(2, 0, 0) / numberOfCuts
+        yDeltaVector = vertex(0, 2, 0) / numberOfCuts
         self.numberOfCuts = numberOfCuts
         self.numberOfPointsPerSide = self.numberOfCuts + 2
         self.points = [
-            v1 + yDeltaVector * y + xDeltaVector * x
-            for y in range(self.numberOfPointsPerSide)
+            vertex(-1, -1, 0) + yDeltaVector * y + xDeltaVector * x
             for x in range(self.numberOfPointsPerSide)
+            for y in range(self.numberOfPointsPerSide)
         ]
 
     def children(self):

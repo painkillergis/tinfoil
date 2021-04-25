@@ -113,40 +113,32 @@ def test_ladderSubdivideQuads():
 
 
 def test_planeSubdivision():
-    assert flatten(
-        planeSubdivision(
+    assert planeSubdivision(2).children() == [
+        quad(
+            vertex(-1, -1, 0),
+            vertex(0, -1, 0),
             vertex(0, 0, 0),
-            vertex(2, 0, 0),
-            vertex(2, 2, 0),
-            vertex(0, 2, 0),
-            2,
-        ).children()
-    ) == [
-               quad(
-                   vertex(0, 0, 0),
-                   vertex(0, 1, 0),
-                   vertex(1, 1, 0),
-                   vertex(1, 0, 0),
-               ),
-               quad(
-                   vertex(0, 1, 0),
-                   vertex(0, 2, 0),
-                   vertex(1, 2, 0),
-                   vertex(1, 1, 0),
-               ),
-               quad(
-                   vertex(1, 0, 0),
-                   vertex(1, 1, 0),
-                   vertex(2, 1, 0),
-                   vertex(2, 0, 0),
-               ),
-               quad(
-                   vertex(1, 1, 0),
-                   vertex(1, 2, 0),
-                   vertex(2, 2, 0),
-                   vertex(2, 1, 0),
-               ),
-           ]
+            vertex(-1, 0, 0),
+        ),
+        quad(
+            vertex(0, -1, 0),
+            vertex(1, -1, 0),
+            vertex(1, 0, 0),
+            vertex(0, 0, 0),
+        ),
+        quad(
+            vertex(-1, 0, 0),
+            vertex(0, 0, 0),
+            vertex(0, 1, 0),
+            vertex(-1, 1, 0),
+        ),
+        quad(
+            vertex(0, 0, 0),
+            vertex(1, 0, 0),
+            vertex(1, 1, 0),
+            vertex(0, 1, 0),
+        ),
+    ]
 
 
 def test_polarVertex():
