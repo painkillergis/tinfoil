@@ -14,14 +14,6 @@ def renderNode(arg):
         return arg
     elif isinstance(arg, Renderable):
         return arg.render()
-    elif type(arg).__name__ == "tri":
-        return f"""facet normal 0 0 0
-  outer loop
-    {render(arg.v1)}
-    {render(arg.v2)}
-    {render(arg.v3)}
-  endloop
-endfacet"""
     elif type(arg).__name__ == "quad":
         return render([
             triangle(arg.v1, arg.v2, arg.v3),
@@ -59,7 +51,21 @@ class vertex(Renderable, EqualityMixin):
         return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
 
 
-triangle = namedtuple("tri", ["v1", "v2", "v3"])
+class triangle(Renderable, EqualityMixin):
+    def __init__(self, v1, v2, v3):
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+
+    def render(self):
+        return f"""facet normal 0 0 0
+  outer loop
+    {render(self.v1)}
+    {render(self.v2)}
+    {render(self.v3)}
+  endloop
+endfacet"""
+
 
 quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
 
