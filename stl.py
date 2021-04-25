@@ -1,6 +1,6 @@
 import numbers
 from abc import ABCMeta, abstractmethod
-from math import cos, radians, sin
+from math import cos, radians, sin, sqrt, floor
 
 
 def render(*args):
@@ -118,16 +118,26 @@ endsolid {self.name}"""
 
 class quadSubdivision(RenderableAncestor, EqualityMixin):
     def __init__(self, v1, v2, v3, v4, numberOfCuts):
-        self.v1 = v1
-        self.v2 = v2
-        self.v3 = v3
-        self.v4 = v4
+        xDeltaVector = (v2 - v1) / numberOfCuts
+        yDeltaVector = (v4 - v1) / numberOfCuts
         self.numberOfCuts = numberOfCuts
+        self.numberOfPointsPerSide = self.numberOfCuts + 2
+        self.points = [
+            v1 + yDeltaVector * y + xDeltaVector * x
+            for y in range(self.numberOfPointsPerSide)
+            for x in range(self.numberOfPointsPerSide)
+        ]
 
     def children(self):
         return [
-            ladderSubdivideQuads(quad.v1, quad.v4, quad.v3, quad.v2, self.numberOfCuts)
-            for quad in ladderSubdivideQuads(self.v1, self.v2, self.v3, self.v4, self.numberOfCuts)
+            quad(
+                self.points[x * self.numberOfPointsPerSide + y],
+                self.points[(x + 1) * self.numberOfPointsPerSide + y],
+                self.points[(x + 1) * self.numberOfPointsPerSide + (y + 1)],
+                self.points[x * self.numberOfPointsPerSide + (y + 1)],
+            )
+            for y in range(self.numberOfCuts)
+            for x in range(self.numberOfCuts)
         ]
 
 
