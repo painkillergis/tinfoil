@@ -149,11 +149,11 @@ def polarVertex(radius, t, z):
 def subdividePoints(pointsPerSide, v1, v2, v3):
     xDeltaVector = divideVectorByScalar(subtractVectors(v2, v1), pointsPerSide)
     yDeltaVector = divideVectorByScalar(subtractVectors(v3, v1), pointsPerSide)
-    results = []
-    for y in range(pointsPerSide + 1):
-        for x in range(pointsPerSide + 1 - y):
-            results.append(v1 + xDeltaVector * x + yDeltaVector * y)
-    return results
+    return [
+        v1 + xDeltaVector * x + yDeltaVector * y
+        for y in range(pointsPerSide + 1)
+        for x in range(pointsPerSide + 1 - y)
+    ]
 
 
 def divideVectorByScalar(vector, scalar):
