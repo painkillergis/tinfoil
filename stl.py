@@ -1,6 +1,6 @@
 import numbers
 from abc import ABCMeta, abstractmethod
-from math import cos, radians, sin, sqrt, floor
+from math import cos, radians, sin
 
 
 def render(*args):
