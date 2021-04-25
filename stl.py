@@ -4,18 +4,7 @@ from math import cos, radians, sin
 
 
 def render(*args):
-    if len(args) > 1:
-        return "\n".join(map(render, args))
-
-    arg = args[0]
-    if type(arg) is list:
-        return render(*arg)
-    if type(arg) is str:
-        return arg
-    if isinstance(arg, Renderable):
-        return arg.render()
-    if isinstance(arg, RenderableAncestor):
-        return render(arg.children())
+    return fragment(*args).render()
 
 
 class EqualityMixin:
@@ -34,11 +23,25 @@ class Renderable:
     def render(self): raise NotImplementedError
 
 
-class RenderableAncestor:
-    __metaclass__ = ABCMeta
+class fragment(Renderable, EqualityMixin):
+    def __init__(self, *children):
+        self._children = children
 
-    @abstractmethod
-    def children(self): raise NotImplementedError
+    def render(self):
+        children = self._children
+        if len(children) > 1:
+            return "\n".join(map(render, children))
+
+        child = children[0]
+        if type(child) is list:
+            return render(*child)
+        if isinstance(child, fragment):
+            return render(child.children())
+        if isinstance(child, Renderable):
+            return child.render()
+
+    def children(self):
+        return self._children
 
 
 class vertex(Renderable, EqualityMixin):
@@ -91,65 +94,54 @@ class triangle(Renderable, EqualityMixin):
 endfacet"""
 
 
-class quad(RenderableAncestor, EqualityMixin):
-    def __init__(self, v1, v2, v3, v4):
-        self.v1 = v1
-        self.v2 = v2
-        self.v3 = v3
-        self.v4 = v4
-
-    def children(self):
-        return [
-            triangle(self.v1, self.v2, self.v3),
-            triangle(self.v1, self.v3, self.v4),
-        ]
+def quad(v1, v2, v3, v4):
+    return fragment(
+        triangle(v1, v2, v3),
+        triangle(v1, v3, v4),
+    )
 
 
 class solid(Renderable, EqualityMixin):
-    def __init__(self, name, facets):
+    def __init__(self, name, child):
         self.name = name
-        self.facets = facets
+        self.child = child
 
     def render(self):
         return f"""solid {self.name}
-{render(self.facets)}
+{self.child.render()}
 endsolid {self.name}"""
 
 
-class planeSubdivision(RenderableAncestor, EqualityMixin):
-    def __init__(self, numberOfCuts):
-        xDeltaVector = vertex(2, 0, 0) / numberOfCuts
-        yDeltaVector = vertex(0, 2, 0) / numberOfCuts
-        self.numberOfCuts = numberOfCuts
-        self.numberOfPointsPerSide = self.numberOfCuts + 2
-        self.points = [
-            vertex(-1, -1, 0) + yDeltaVector * y + xDeltaVector * x
-            for x in range(self.numberOfPointsPerSide)
-            for y in range(self.numberOfPointsPerSide)
-        ]
-
-    def children(self):
-        return [
-            quad(
-                self.points[x * self.numberOfPointsPerSide + y],
-                self.points[(x + 1) * self.numberOfPointsPerSide + y],
-                self.points[(x + 1) * self.numberOfPointsPerSide + (y + 1)],
-                self.points[x * self.numberOfPointsPerSide + (y + 1)],
-            )
-            for y in range(self.numberOfCuts)
-            for x in range(self.numberOfCuts)
-        ]
+def planeSubdivision(numberOfCuts):
+    xDeltaVector = vertex(2, 0, 0) / numberOfCuts
+    yDeltaVector = vertex(0, 2, 0) / numberOfCuts
+    numberOfPointsPerSide = numberOfCuts + 2
+    points = [
+        vertex(-1, -1, 0) + yDeltaVector * y + xDeltaVector * x
+        for x in range(numberOfPointsPerSide)
+        for y in range(numberOfPointsPerSide)
+    ]
+    return fragment(*[
+        quad(
+            points[x * numberOfPointsPerSide + y],
+            points[(x + 1) * numberOfPointsPerSide + y],
+            points[(x + 1) * numberOfPointsPerSide + (y + 1)],
+            points[x * numberOfPointsPerSide + (y + 1)],
+        )
+        for y in range(numberOfCuts)
+        for x in range(numberOfCuts)
+    ])
 
 
 def ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts):
-    return [
+    return fragment(*[
         quad(
             lerp(v1, v2, a, numberOfCuts),
             lerp(v1, v2, a + 1, numberOfCuts),
             lerp(v4, v3, a + 1, numberOfCuts),
             lerp(v4, v3, a, numberOfCuts),
         ) for a in range(numberOfCuts)
-    ]
+    ])
 
 
 def lerp(v1, v2, numerator, denominator):

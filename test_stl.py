@@ -4,16 +4,6 @@ import pytest
 from stl import *
 
 
-def flatten(args):
-    result = []
-    for arg in args:
-        if type(arg) is list:
-            result += flatten(arg)
-        else:
-            result.append(arg)
-    return result
-
-
 def test_vertex_render():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
@@ -79,28 +69,46 @@ def test_quad():
     v2 = vertex(8, 16, 32)
     v3 = vertex(64, 128, 256)
     v4 = vertex(512, 1024, 2048)
-    assert render(quad(v1, v2, v3, v4)) == render(
+    assert quad(v1, v2, v3, v4) == fragment(
         triangle(v1, v2, v3),
         triangle(v1, v3, v4),
     )
 
 
 def test_solid():
-    assert render(solid("something", ["facets"])) == """solid something
-facets
+    class TestRenderable(Renderable):
+        def render(self):
+            return "TestRenderable"
+
+    assert solid(
+        "something",
+        TestRenderable(),
+    ).render() == """solid something
+TestRenderable
 endsolid something"""
 
 
+def test_fragment():
+    class TestRenderable(Renderable):
+        def render(self):
+            return "TestRenderable"
+
+    class TestFragment(fragment):
+        def children(self):
+            return [TestRenderable()]
+
+    assert fragment(TestRenderable(), TestFragment()).render() == \
+           """TestRenderable\nTestRenderable"""
+
+
 def test_ladderSubdivideQuads():
-    assert render(
-        ladderSubdivideQuads(
-            vertex(0, 0, 0),
-            vertex(2, 0, 0),
-            vertex(2, 2, 0),
-            vertex(0, 2, 0),
-            2,
-        ),
-    ) == render(
+    assert ladderSubdivideQuads(
+        vertex(0, 0, 0),
+        vertex(2, 0, 0),
+        vertex(2, 2, 0),
+        vertex(0, 2, 0),
+        2,
+    ) == fragment(
         quad(
             vertex(0, 0, 0),
             vertex(1, 0, 0),
@@ -117,7 +125,7 @@ def test_ladderSubdivideQuads():
 
 
 def test_planeSubdivision():
-    assert planeSubdivision(2).children() == [
+    assert planeSubdivision(2) == fragment(
         quad(
             vertex(-1, -1, 0),
             vertex(0, -1, 0),
@@ -142,7 +150,7 @@ def test_planeSubdivision():
             vertex(1, 1, 0),
             vertex(0, 1, 0),
         ),
-    ]
+    )
 
 
 def test_polarVertex():
