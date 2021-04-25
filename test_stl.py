@@ -79,7 +79,7 @@ def test_quadSubdivision():
             vertex(2, 2, 0),
             vertex(0, 2, 0),
             2,
-        )
+        ).children()
     ) == [
                quad(
                    vertex(0, 0, 0),

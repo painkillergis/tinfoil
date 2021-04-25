@@ -91,11 +91,19 @@ class solid(Renderable, EqualityMixin):
 endsolid {self.name}"""
 
 
-def quadSubdivision(v1, v2, v3, v4, numberOfCuts):
-    return [
-        ladderSubdivideQuads(quad.v1, quad.v4, quad.v3, quad.v2, numberOfCuts)
-        for quad in ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts)
-    ]
+class quadSubdivision(RenderableAncestor, EqualityMixin):
+    def __init__(self, v1, v2, v3, v4, numberOfCuts):
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+        self.v4 = v4
+        self.numberOfCuts = numberOfCuts
+
+    def children(self):
+        return [
+            ladderSubdivideQuads(quad.v1, quad.v4, quad.v3, quad.v2, self.numberOfCuts)
+            for quad in ladderSubdivideQuads(self.v1, self.v2, self.v3, self.v4, self.numberOfCuts)
+        ]
 
 
 def ladderSubdivideQuads(v1, v2, v3, v4, numberOfCuts):
