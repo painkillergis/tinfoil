@@ -116,7 +116,7 @@ class solid(Renderable, EqualityMixin):
 endsolid {self.name}"""
 
 
-class quadSubdivision(RenderableAncestor, EqualityMixin):
+class planeSubdivision(RenderableAncestor, EqualityMixin):
     def __init__(self, v1, v2, v3, v4, numberOfCuts):
         xDeltaVector = (v2 - v1) / numberOfCuts
         yDeltaVector = (v4 - v1) / numberOfCuts
