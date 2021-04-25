@@ -22,6 +22,16 @@ def test_vertex_multiply_scalar():
     assert vertex(1, 2, 3) * 2 == vertex(2, 4, 6)
 
 
+def test_vertex_add_vertex():
+    assert vertex(1, 2, 4) + vertex(8, 16, 32) == vertex(9, 18, 36)
+
+
+def test_vertex_add_unknown():
+    with pytest.raises(ValueError) as error:
+        vertex(1, 2, 4) + 8
+    assert str(error.value) == "unsupported operand type(s) for +: 'vertex' and 'int'"
+
+
 def test_vertex_multiply_unknown():
     with pytest.raises(ValueError) as error:
         vertex(1, 2, 3) * "bad"

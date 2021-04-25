@@ -50,6 +50,12 @@ class vertex(Renderable, EqualityMixin):
     def render(self):
         return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
 
+    def __add__(self, other):
+        if isinstance(other, vertex):
+            return vertex(self.x + other.x, self.y + other.y, self.z + other.z)
+        else:
+            raise ValueError(f"unsupported operand type(s) for +: 'vertex' and '{type(other).__name__}'")
+
     def __mul__(self, other):
         if isinstance(other, numbers.Number):
             return vertex(self.x * other, self.y * other, self.z * other)
@@ -146,13 +152,7 @@ def subdividePoints(pointsPerSide, v1, v2, v3):
     results = []
     for y in range(pointsPerSide + 1):
         for x in range(pointsPerSide + 1 - y):
-            results.append(
-                addVectors(
-                    v1,
-                    xDeltaVector * x,
-                    yDeltaVector * y,
-                )
-            )
+            results.append(v1 + xDeltaVector * x + yDeltaVector * y)
     return results
 
 
