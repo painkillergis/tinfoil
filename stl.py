@@ -1,6 +1,5 @@
-from collections import namedtuple
-from math import cos, radians, sin
 from abc import ABCMeta, abstractmethod
+from math import cos, radians, sin
 
 
 def render(*args):
@@ -14,11 +13,8 @@ def renderNode(arg):
         return arg
     elif isinstance(arg, Renderable):
         return arg.render()
-    elif type(arg).__name__ == "quad":
-        return render([
-            triangle(arg.v1, arg.v2, arg.v3),
-            triangle(arg.v1, arg.v3, arg.v4),
-        ])
+    elif isinstance(arg, RenderableAncestor):
+        return render(arg.children())
 
 
 class EqualityMixin:
@@ -35,6 +31,13 @@ class Renderable:
 
     @abstractmethod
     def render(self): raise NotImplementedError
+
+
+class RenderableAncestor:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def children(self): raise NotImplementedError
 
 
 class vertex(Renderable, EqualityMixin):
@@ -63,7 +66,18 @@ class triangle(Renderable, EqualityMixin):
 endfacet"""
 
 
-quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
+class quad(RenderableAncestor, EqualityMixin):
+    def __init__(self, v1, v2, v3, v4):
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+        self.v4 = v4
+
+    def children(self):
+        return [
+            triangle(self.v1, self.v2, self.v3),
+            triangle(self.v1, self.v3, self.v4),
+        ]
 
 
 class solid(Renderable, EqualityMixin):
