@@ -75,9 +75,13 @@ endfacet"""
 
 
 def test_quad():
-    assert render(quad("a", "b", "c", "d")) == render(
-        triangle("a", "b", "c"),
-        triangle("a", "c", "d"),
+    v1 = vertex(1, 2, 4)
+    v2 = vertex(8, 16, 32)
+    v3 = vertex(64, 128, 256)
+    v4 = vertex(512, 1024, 2048)
+    assert render(quad(v1, v2, v3, v4)) == render(
+        triangle(v1, v2, v3),
+        triangle(v1, v3, v4),
     )
 
 

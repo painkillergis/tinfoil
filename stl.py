@@ -84,9 +84,9 @@ class triangle(Renderable, EqualityMixin):
     def render(self):
         return f"""facet normal 0 0 0
   outer loop
-    {render(self.v1)}
-    {render(self.v2)}
-    {render(self.v3)}
+    {self.v1.render()}
+    {self.v2.render()}
+    {self.v3.render()}
   endloop
 endfacet"""
 
