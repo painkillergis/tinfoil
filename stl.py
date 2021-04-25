@@ -19,10 +19,6 @@ def renderNode(arg):
             triangle(arg.v1, arg.v2, arg.v3),
             triangle(arg.v1, arg.v3, arg.v4),
         ])
-    elif type(arg).__name__ == "solid":
-        return f"""solid {arg.name}
-{render(arg.facets)}
-endsolid {arg.name}"""
 
 
 class EqualityMixin:
@@ -69,7 +65,16 @@ endfacet"""
 
 quad = namedtuple("quad", ["v1", "v2", "v3", "v4"])
 
-solid = namedtuple("solid", ["name", "facets"])
+
+class solid(Renderable, EqualityMixin):
+    def __init__(self, name, facets):
+        self.name = name
+        self.facets = facets
+
+    def render(self):
+        return f"""solid {self.name}
+{render(self.facets)}
+endsolid {self.name}"""
 
 
 def quadSubdivision(v1, v2, v3, v4, numberOfCuts):
