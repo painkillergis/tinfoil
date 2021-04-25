@@ -3,17 +3,17 @@ from math import cos, radians, sin
 
 
 def render(*args):
-    return "\n".join(map(renderNode, args))
+    if len(args) > 1:
+        return "\n".join(map(render, args))
 
-
-def renderNode(arg):
+    arg = args[0]
     if type(arg) is list:
         return render(*arg)
-    elif type(arg) is str:
+    if type(arg) is str:
         return arg
-    elif isinstance(arg, Renderable):
+    if isinstance(arg, Renderable):
         return arg.render()
-    elif isinstance(arg, RenderableAncestor):
+    if isinstance(arg, RenderableAncestor):
         return render(arg.children())
 
 
