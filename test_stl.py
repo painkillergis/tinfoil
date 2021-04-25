@@ -93,11 +93,7 @@ def test_fragment():
         def render(self):
             return "TestRenderable"
 
-    class TestFragment(fragment):
-        def children(self):
-            return [TestRenderable()]
-
-    assert fragment(TestRenderable(), TestFragment()).render() == \
+    assert fragment(TestRenderable(), fragment(TestRenderable())).render() == \
            """TestRenderable\nTestRenderable"""
 
 

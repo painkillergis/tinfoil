@@ -28,20 +28,7 @@ class fragment(Renderable, EqualityMixin):
         self._children = children
 
     def render(self):
-        children = self._children
-        if len(children) > 1:
-            return "\n".join(map(render, children))
-
-        child = children[0]
-        if type(child) is list:
-            return render(*child)
-        if isinstance(child, fragment):
-            return render(child.children())
-        if isinstance(child, Renderable):
-            return child.render()
-
-    def children(self):
-        return self._children
+        return "\n".join(map(lambda child: child.render(), self._children))
 
 
 class vertex(Renderable, EqualityMixin):
