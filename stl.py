@@ -56,6 +56,12 @@ class vertex(Renderable, EqualityMixin):
         else:
             raise ValueError(f"unsupported operand type(s) for +: 'vertex' and '{type(other).__name__}'")
 
+    def __sub__(self, other):
+        if isinstance(other, vertex):
+            return vertex(self.x - other.x, self.y - other.y, self.z - other.z)
+        else:
+            raise ValueError(f"unsupported operand type(s) for -: 'vertex' and '{type(other).__name__}'")
+
     def __mul__(self, other):
         if isinstance(other, numbers.Number):
             return vertex(self.x * other, self.y * other, self.z * other)
@@ -153,32 +159,13 @@ def polarVertex(radius, t, z):
 
 
 def subdividePoints(pointsPerSide, v1, v2, v3):
-    xDeltaVector = subtractVectors(v2, v1) / pointsPerSide
-    yDeltaVector = subtractVectors(v3, v1) / pointsPerSide
+    xDeltaVector = (v2 - v1) / pointsPerSide
+    yDeltaVector = (v3 - v1) / pointsPerSide
     return [
         v1 + xDeltaVector * x + yDeltaVector * y
         for y in range(pointsPerSide + 1)
         for x in range(pointsPerSide + 1 - y)
     ]
-
-
-def divideVectorByScalar(vector, scalar):
-    return vertex(vector.x / scalar, vector.y / scalar, vector.z / scalar)
-
-
-def subtractVectors(v1, v2):
-    return vertex(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
-
-
-def addVectors(*vs):
-    x = 0
-    y = 0
-    z = 0
-    for v in vs:
-        x += v.x
-        y += v.y
-        z += v.z
-    return vertex(x, y, z)
 
 
 def trianglesFromSubdivisionPoints(pointsPerSide, points):
