@@ -62,6 +62,12 @@ class vertex(Renderable, EqualityMixin):
         else:
             raise ValueError(f"unsupported operand type(s) for *: 'vertex' and '{type(other).__name__}'")
 
+    def __truediv__(self, other):
+        if isinstance(other, numbers.Number):
+            return vertex(self.x / other, self.y / other, self.z / other)
+        else:
+            raise ValueError(f"unsupported operand type(s) for /: 'vertex' and '{type(other).__name__}'")
+
 
 class triangle(Renderable, EqualityMixin):
     def __init__(self, v1, v2, v3):
@@ -147,8 +153,8 @@ def polarVertex(radius, t, z):
 
 
 def subdividePoints(pointsPerSide, v1, v2, v3):
-    xDeltaVector = divideVectorByScalar(subtractVectors(v2, v1), pointsPerSide)
-    yDeltaVector = divideVectorByScalar(subtractVectors(v3, v1), pointsPerSide)
+    xDeltaVector = subtractVectors(v2, v1) / pointsPerSide
+    yDeltaVector = subtractVectors(v3, v1) / pointsPerSide
     return [
         v1 + xDeltaVector * x + yDeltaVector * y
         for y in range(pointsPerSide + 1)

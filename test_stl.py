@@ -38,6 +38,16 @@ def test_vertex_multiply_unknown():
     assert str(error.value) == "unsupported operand type(s) for *: 'vertex' and 'str'"
 
 
+def test_vertex_divide_scalar():
+    assert vertex(1, 2, 4) / 8 == vertex(0.125, 0.25, 0.5)
+
+
+def test_vertex_divide_unknown():
+    with pytest.raises(ValueError) as error:
+        vertex(1, 2, 4) / "str"
+    assert str(error.value) == "unsupported operand type(s) for /: 'vertex' and 'str'"
+
+
 def test_triangle():
     assert render(
         triangle(
