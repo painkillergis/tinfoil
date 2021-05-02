@@ -1,3 +1,9 @@
-import bpy
-bpy.ops.import_mesh.stl(filepath="./sample.stl")
+import bpy, sys
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("source")
+args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
+
+bpy.ops.import_mesh.stl(filepath=args.source)
 bpy.data.objects.remove(bpy.data.objects['Cube'], do_unlink=True)
