@@ -219,7 +219,7 @@ def test_trianglesFromSubdivisionPoints():
             vertex(1, 2, 1),
             vertex(0, 3, 1),
         ],
-    ) == [
+    ) == fragment(*[
                triangle(
                    vertex(0, 0, 1),
                    vertex(1, 0, 1),
@@ -265,4 +265,4 @@ def test_trianglesFromSubdivisionPoints():
                    vertex(1, 2, 1),
                    vertex(0, 2, 1),
                ),
-           ]
+           ])

@@ -184,4 +184,4 @@ def trianglesFromSubdivisionPoints(pointsPerSide, points):
                     getPoint(x, y + 1),
                 )
             )
-    return results
+    return fragment(*results)
