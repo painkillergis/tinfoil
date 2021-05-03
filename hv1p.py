@@ -87,47 +87,48 @@ def log(args):
 def hv1p():
     heightmap = numpy.array(Image.open(args.source))
     heightmapHeight, heightmapWidth = heightmap.shape
+    tops = pipeline(
+        enumerate(tiles),
+        unpack(lambda index, tile: pipeline(
+            subdividePoints(
+                args.detail,
+                tile.v1,
+                tile.v2,
+                tile.v3
+            ),
+            modelCoordinatesToUnit,
+            scale(vertex(heightmapWidth - 1, heightmapHeight - 1, 1)),
+            lambda v: vertex(v.x, v.y, heightmap[int(v.x), int(v.y)]),
+            scale(vertex(1 / (heightmapWidth - 1), 1 / (heightmapHeight - 1), 1)),
+            unitToModelCoordinates,
+            move(
+                vertex(
+                    sin((1 - index) * pi / 3),
+                    cos((1 - index) * pi / 3),
+                    0,
+                ) * a / 4,
+            ),
+        ))
+    )
+
+    bottoms = pipeline(
+        enumerate(tiles),
+        unpack(lambda index, tile: pipeline(
+            subdividePoints(args.detail, tile.v1, tile.v2, tile.v3),
+            move(
+                vertex(
+                    sin((1 - index) * pi / 3),
+                    cos((1 - index) * pi / 3),
+                    0,
+                ) * a / 4,
+            ),
+        ))
+    )
 
     return fragment(
         *pipeline(
-            enumerate(tiles),
-            unpack(lambda index, tile: pipeline(
-                subdividePoints(
-                    args.detail,
-                    tile.v1,
-                    tile.v2,
-                    tile.v3
-                ),
-                modelCoordinatesToUnit,
-                scale(vertex(heightmapWidth - 1, heightmapHeight - 1, 1)),
-                lambda v: vertex(v.x, v.y, heightmap[int(v.x), int(v.y)]),
-                scale(vertex(1 / (heightmapWidth - 1), 1 / (heightmapHeight - 1), 1)),
-                unitToModelCoordinates,
-                move(
-                    vertex(
-                        sin((1 - index) * pi / 3),
-                        cos((1 - index) * pi / 3),
-                        0,
-                    ) * a / 4,
-                ),
-            )),
+            tops + bottoms,
             lambda points: trianglesFromSubdivisionPoints(args.detail, points),
-        ),
-        *pipeline(
-            enumerate(tiles),
-            unpack(lambda index, tile: trianglesFromSubdivisionPoints(
-                args.detail,
-                pipeline(
-                    subdividePoints(args.detail, tile.v1, tile.v2, tile.v3),
-                    move(
-                        vertex(
-                            sin((1 - index) * pi / 3),
-                            cos((1 - index) * pi / 3),
-                            0,
-                        ) * a / 4,
-                    ),
-                )
-            )),
         ),
     )
 
