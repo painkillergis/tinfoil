@@ -169,7 +169,7 @@ def hv1p():
         zip(tops, bottoms),
         unpack(lambda top, bottom: fragment(
             trianglesFromSubdivisionPoints(args.detail, top),
-            trianglesFromSubdivisionPoints(args.detail, bottom),
+            trianglesFromSubdivisionPoints(args.detail, bottom, True),
             wall1(top, bottom),
             wall2(top, bottom),
             wall3(top, bottom),

@@ -192,7 +192,7 @@ def subdividePoints(pointsPerSide, v1, v2, v3):
     ]
 
 
-def trianglesFromSubdivisionPoints(pointsPerSide, points):
+def trianglesFromSubdivisionPoints(pointsPerSide, points, reverse=False):
     getPoint = lambda x, y: points[y * ((pointsPerSide - 1) * 2 - y + 5) // 2 + x]
 
     results = []
@@ -201,8 +201,8 @@ def trianglesFromSubdivisionPoints(pointsPerSide, points):
             results.append(
                 triangle(
                     getPoint(x, y),
-                    getPoint(x + 1, y),
-                    getPoint(x, y + 1),
+                    getPoint(x, y + 1) if reverse else getPoint(x + 1, y),
+                    getPoint(x + 1, y) if reverse else getPoint(x, y + 1),
                 )
             )
     for y in range(pointsPerSide - 1):
@@ -210,8 +210,8 @@ def trianglesFromSubdivisionPoints(pointsPerSide, points):
             results.append(
                 triangle(
                     getPoint(x + 1, y),
-                    getPoint(x + 1, y + 1),
-                    getPoint(x, y + 1),
+                    getPoint(x, y + 1) if reverse else getPoint(x + 1, y + 1),
+                    getPoint(x + 1, y + 1) if reverse else getPoint(x, y + 1),
                 )
             )
     return fragment(*results)
