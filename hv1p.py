@@ -165,29 +165,20 @@ def hv1p():
             ) for i in range(len(topEdges) - 1)
         ])
 
-    return fragment(
-        *pipeline(
-            tops + bottoms,
-            lambda points: trianglesFromSubdivisionPoints(args.detail, points),
-        ),
-        *pipeline(
-            zip(tops, bottoms),
-            unpack(wall1),
-        ),
-        *pipeline(
-            zip(tops, bottoms),
-            unpack(wall2),
-        ),
-        *pipeline(
-            zip(tops, bottoms),
-            unpack(wall3),
-        ),
+    models = pipeline(
+        zip(tops, bottoms),
+        unpack(lambda top, bottom: fragment(
+            trianglesFromSubdivisionPoints(args.detail, top),
+            trianglesFromSubdivisionPoints(args.detail, bottom),
+            wall1(top, bottom),
+            wall2(top, bottom),
+            wall3(top, bottom),
+        )),
     )
 
+    return [solid("solid", fragment(*models))]
 
-with open(args.destination, 'w') as f:
-    f.write(
-        render(
-            hv1p()
-        )
-    )
+
+for solid in hv1p():
+    with open(args.destination.replace("%s", solid.name), 'w') as f:
+        f.write(render(solid))
