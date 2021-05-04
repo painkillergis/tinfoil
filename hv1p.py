@@ -125,10 +125,62 @@ def hv1p():
         ))
     )
 
+    def wall1(top, bottom):
+        topEdges = top[0:args.detail + 1]
+        bottomEdges = bottom[0:args.detail + 1]
+        return fragment(*[
+            quad(
+                bottomEdges[i],
+                bottomEdges[i + 1],
+                topEdges[i + 1],
+                topEdges[i],
+            ) for i in range(len(topEdges) - 1)
+        ])
+
+    def wall2(top, bottom):
+        t = lambda x: int(x * (x + 1) / 2)
+
+        topEdges = [top[-t(i + 1)] for i in range(args.detail + 1)]
+        bottomEdges = [bottom[-t(i + 1)] for i in range(args.detail + 1)]
+        return fragment(*[
+            quad(
+                bottomEdges[i],
+                bottomEdges[i + 1],
+                topEdges[i + 1],
+                topEdges[i],
+            ) for i in range(len(topEdges) - 1)
+        ])
+
+    def wall3(top, bottom):
+        t = lambda x: int(x * (x + 1) / 2)
+
+        topEdges = [top[-1 - t(i)] for i in range(args.detail + 1)]
+        bottomEdges = [bottom[-1 - t(i)] for i in range(args.detail + 1)]
+        return fragment(*[
+            quad(
+                bottomEdges[i],
+                bottomEdges[i + 1],
+                topEdges[i + 1],
+                topEdges[i],
+            ) for i in range(len(topEdges) - 1)
+        ])
+
     return fragment(
         *pipeline(
             tops + bottoms,
             lambda points: trianglesFromSubdivisionPoints(args.detail, points),
+        ),
+        *pipeline(
+            zip(tops, bottoms),
+            unpack(wall1),
+        ),
+        *pipeline(
+            zip(tops, bottoms),
+            unpack(wall2),
+        ),
+        *pipeline(
+            zip(tops, bottoms),
+            unpack(wall3),
         ),
     )
 
