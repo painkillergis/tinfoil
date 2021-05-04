@@ -63,18 +63,18 @@ tiles = [
     ),
     triangle(
         vertex(-2 * a, 0, 0),
-        vertex(0, 0, 0),
         vertex(-a, -b, 0),
+        vertex(0, 0, 0),
     ),
     triangle(
         vertex(-a, -b, 0),
+        vertex(a, -b, 0),
+        vertex(0, 0, 0),
+    ),
+    triangle(
         vertex(0, 0, 0),
         vertex(a, -b, 0),
-    ),
-    triangle(
-        vertex(0, 0, 0),
         vertex(2 * a, 0, 0),
-        vertex(a, -b, 0),
     ),
 ]
 
@@ -94,7 +94,7 @@ def hv1p():
                 args.detail,
                 tile.v1,
                 tile.v2,
-                tile.v3
+                tile.v3,
             ),
             modelCoordinatesToUnit,
             scale(vertex(heightmapWidth - 1, heightmapHeight - 1, 1)),
