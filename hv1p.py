@@ -162,7 +162,7 @@ def hv1p():
     if args.multiple_files:
         return [solid(str(index), model) for index, model in enumerate(models)]
     else:
-        return [solid("solid", fragment(*models))]
+        return [solid("0", fragment(*models))]
 
 
 for solid in hv1p():
