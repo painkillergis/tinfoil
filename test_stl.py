@@ -8,6 +8,10 @@ def test_vertex_render():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
 
+def test_vertex_render_binary():
+    assert renderBinary(vertex(1, 2, 3)) == bytearray("\x00\x00\x80\x3F\x00\x00\x00\x40\x00\x00\x40\x40", "latin-1")
+
+
 def test_vertex_multiply_scalar():
     assert vertex(1, 2, 3) * 2 == vertex(2, 4, 6)
 

@@ -1,10 +1,16 @@
 import numbers
+import struct
 from abc import ABCMeta, abstractmethod
+from functools import reduce
 from math import cos, radians, sin, sqrt, floor
 
 
 def render(*args):
     return fragment(*args).render()
+
+
+def renderBinary(*args):
+    return fragment(*args).renderBinary()
 
 
 class EqualityMixin:
@@ -22,6 +28,9 @@ class Renderable:
     @abstractmethod
     def render(self): raise NotImplementedError
 
+    @abstractmethod
+    def renderBinary(self): raise NotImplementedError
+
 
 class fragment(Renderable, EqualityMixin):
     def __init__(self, *children):
@@ -29,6 +38,9 @@ class fragment(Renderable, EqualityMixin):
 
     def render(self):
         return "\n".join(map(lambda child: child.render(), self._children))
+
+    def renderBinary(self):
+        return reduce(lambda result, next: result + next.renderBinary(), self._children, bytearray())
 
 
 class vertex(Renderable, EqualityMixin):
@@ -39,6 +51,12 @@ class vertex(Renderable, EqualityMixin):
 
     def render(self):
         return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
+
+    def renderBinary(self):
+        pack = struct.Struct('<f').pack
+        return bytearray(pack(self.x)) + \
+               bytearray(pack(self.y)) + \
+               bytearray(pack(self.z))
 
     def __add__(self, other):
         if isinstance(other, vertex):
