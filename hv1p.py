@@ -1,9 +1,10 @@
 from argparse import ArgumentParser
-from stl import *
+from math import pi, sin, cos
 
 import numpy
 from PIL import Image
-from math import pi, sin, cos, degrees
+
+from stl import *
 
 parser = ArgumentParser()
 parser.add_argument("source")
