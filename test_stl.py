@@ -4,6 +4,14 @@ import pytest
 from stl import *
 
 
+class StubRenderable(Renderable):
+    def __init__(self, bytes):
+        self.bytes = bytes
+
+    def renderBinary(self):
+        return bytearray(self.bytes, "latin-1")
+
+
 def test_vertex_render():
     assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
 
@@ -73,12 +81,6 @@ endfacet"""
 
 
 def test_triangle_render_binary():
-    class StubRenderable(Renderable):
-        def __init__(self, bytes):
-            self.bytes = bytes
-        def renderBinary(self):
-            return bytearray(self.bytes, "latin-1")
-
     assert renderBinary(
         triangle(
             StubRenderable("\x60"),
@@ -99,7 +101,7 @@ def test_quad():
     )
 
 
-def test_solid():
+def test_solid_render():
     class TestRenderable(Renderable):
         def render(self):
             return "TestRenderable"
@@ -110,6 +112,14 @@ def test_solid():
     ).render() == """solid something
 TestRenderable
 endsolid something"""
+
+
+def test_solid_render_binary():
+    bytes = solid("a", StubRenderable("\x60\x61\x62")).renderBinary()
+    assert len(bytes) == 87
+    for i in range(84):
+        assert bytes[i:i + 1] == b"\x00"
+    assert bytes[84:87] == b"\x60\x61\x62"
 
 
 def test_fragment():

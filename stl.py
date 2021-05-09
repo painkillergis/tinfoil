@@ -125,6 +125,9 @@ class solid(Renderable, EqualityMixin):
 {self.child.render()}
 endsolid {self.name}"""
 
+    def renderBinary(self):
+        return b''.join([b"\x00" for ignored in range(84)]) + self.child.renderBinary()
+
 
 def planeSubdivisionPoints(numberOfCuts):
     xDeltaVector = vertex(2, 0, 0) / numberOfCuts
