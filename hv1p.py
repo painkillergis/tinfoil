@@ -126,8 +126,6 @@ def hv1p():
         ))
     )
 
-    t = lambda x: int(x * (x + 1) / 2)
-
     def wall(topEdges, bottomEdges):
         return fragment(*[
             quad(
@@ -137,6 +135,9 @@ def hv1p():
                 topEdges[i],
             ) for i in range(len(topEdges) - 1)
         ])
+
+    def t(x):
+        return int(x * (x + 1) / 2)
 
     models = pipeline(
         zip(tops, bottoms),
