@@ -29,7 +29,7 @@ class Renderable:
     def render(self): raise NotImplementedError
 
     @abstractmethod
-    def renderBinary(self): raise NotImplementedError
+    def renderBinary(self, writable): raise NotImplementedError
 
 
 class fragment(Renderable, EqualityMixin):
@@ -39,8 +39,9 @@ class fragment(Renderable, EqualityMixin):
     def render(self):
         return "\n".join(map(lambda child: child.render(), self._children))
 
-    def renderBinary(self):
-        return reduce(lambda result, next: result + next.renderBinary(), self._children, bytearray())
+    def renderBinary(self, writable):
+        for child in self._children:
+            child.renderBinary(writable)
 
 
 class vertex(Renderable, EqualityMixin):
@@ -52,11 +53,12 @@ class vertex(Renderable, EqualityMixin):
     def render(self):
         return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
 
-    def renderBinary(self):
+    def renderBinary(self, writable):
         pack = struct.Struct('<f').pack
-        return bytearray(pack(self.x)) + \
-               bytearray(pack(self.y)) + \
-               bytearray(pack(self.z))
+        writable.write(
+            bytearray(pack(self.x)) + \
+            bytearray(pack(self.y)) + \
+            bytearray(pack(self.z)))
 
     def __add__(self, other):
         if isinstance(other, vertex):
@@ -100,12 +102,12 @@ class triangle(Renderable, EqualityMixin):
   endloop
 endfacet"""
 
-    def renderBinary(self):
-        return vertex(0, 0, 0).renderBinary() + \
-            self.v1.renderBinary() + \
-            self.v2.renderBinary() + \
-            self.v3.renderBinary() + \
-            bytearray(struct.pack("<h", 0))
+    def renderBinary(self, writable):
+        vertex(0, 0, 0).renderBinary(writable)
+        self.v1.renderBinary(writable)
+        self.v2.renderBinary(writable)
+        self.v3.renderBinary(writable)
+        writable.write(bytearray(struct.pack("<h", 0)))
 
 
 def quad(v1, v2, v3, v4):
@@ -125,8 +127,9 @@ class solid(Renderable, EqualityMixin):
 {self.child.render()}
 endsolid {self.name}"""
 
-    def renderBinary(self):
-        return b''.join([b"\x00" for ignored in range(84)]) + self.child.renderBinary()
+    def renderBinary(self, writable):
+        writable.write(b''.join([b"\x00" for ignored in range(84)]))
+        self.child.renderBinary(writable)
 
 
 def planeSubdivisionPoints(numberOfCuts):

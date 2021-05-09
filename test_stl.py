@@ -8,8 +8,15 @@ class StubRenderable(Renderable):
     def __init__(self, bytes):
         self.bytes = bytes
 
-    def renderBinary(self):
-        return bytearray(self.bytes, "latin-1")
+    def renderBinary(self, writable):
+        writable.write(self.bytes)
+
+
+class StubWritable:
+    bytes = b''
+
+    def write(self, bytes):
+        self.bytes += bytes
 
 
 def test_vertex_render():
@@ -17,7 +24,9 @@ def test_vertex_render():
 
 
 def test_vertex_render_binary():
-    assert renderBinary(vertex(1, 2, 3)) == bytearray("\x00\x00\x80\x3F\x00\x00\x00\x40\x00\x00\x40\x40", "latin-1")
+    writable = StubWritable()
+    vertex(1, 2, 3).renderBinary(writable)
+    assert writable.bytes == bytearray("\x00\x00\x80\x3F\x00\x00\x00\x40\x00\x00\x40\x40", "latin-1")
 
 
 def test_vertex_multiply_scalar():
@@ -81,13 +90,13 @@ endfacet"""
 
 
 def test_triangle_render_binary():
-    assert renderBinary(
-        triangle(
-            StubRenderable("\x60"),
-            StubRenderable("\x61"),
-            StubRenderable("\x62"),
-        ),
-    ) == bytearray("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x60\x61\x62\x00\x00", "latin-1")
+    writable = StubWritable()
+    triangle(
+        StubRenderable(b"\x60"),
+        StubRenderable(b"\x61"),
+        StubRenderable(b"\x62"),
+    ).renderBinary(writable)
+    assert writable.bytes == b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x60\x61\x62\x00\x00"
 
 
 def test_quad():
@@ -115,11 +124,12 @@ endsolid something"""
 
 
 def test_solid_render_binary():
-    bytes = solid("a", StubRenderable("\x60\x61\x62")).renderBinary()
-    assert len(bytes) == 87
+    writable = StubWritable()
+    solid("a", StubRenderable(b"\x60\x61\x62")).renderBinary(writable)
+    assert len(writable.bytes) == 87
     for i in range(84):
-        assert bytes[i:i + 1] == b"\x00"
-    assert bytes[84:87] == b"\x60\x61\x62"
+        assert writable.bytes[i:i + 1] == b"\x00"
+    assert writable.bytes[84:87] == b"\x60\x61\x62"
 
 
 def test_fragment():
