@@ -10,6 +10,7 @@ parser.add_argument("source")
 parser.add_argument("destination")
 parser.add_argument("width", type=float)
 parser.add_argument("detail", type=int)
+parser.add_argument("--multiple-files", action='store_true')
 args = parser.parse_args()
 
 a = args.width / 4
@@ -176,7 +177,10 @@ def hv1p():
         )),
     )
 
-    return [solid("solid", fragment(*models))]
+    if args.multiple_files:
+        return [solid(str(index), model) for index, model in enumerate(models)]
+    else:
+        return [solid("solid", fragment(*models))]
 
 
 for solid in hv1p():
