@@ -100,6 +100,13 @@ class triangle(Renderable, EqualityMixin):
   endloop
 endfacet"""
 
+    def renderBinary(self):
+        return vertex(0, 0, 0).renderBinary() + \
+            self.v1.renderBinary() + \
+            self.v2.renderBinary() + \
+            self.v3.renderBinary() + \
+            bytearray(struct.pack("<h", 0))
+
 
 def quad(v1, v2, v3, v4):
     return fragment(

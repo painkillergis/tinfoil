@@ -56,7 +56,7 @@ def test_vertex_divide_unknown():
     assert str(error.value) == "unsupported operand type(s) for /: 'vertex' and 'str'"
 
 
-def test_triangle():
+def test_triangle_render():
     assert render(
         triangle(
             vertex(1, 2, 3),
@@ -70,6 +70,22 @@ def test_triangle():
     vertex 7.0 8.0 9.0
   endloop
 endfacet"""
+
+
+def test_triangle_render_binary():
+    class StubRenderable(Renderable):
+        def __init__(self, bytes):
+            self.bytes = bytes
+        def renderBinary(self):
+            return bytearray(self.bytes, "latin-1")
+
+    assert renderBinary(
+        triangle(
+            StubRenderable("\x60"),
+            StubRenderable("\x61"),
+            StubRenderable("\x62"),
+        ),
+    ) == bytearray("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x60\x61\x62\x00\x00", "latin-1")
 
 
 def test_quad():
@@ -224,49 +240,49 @@ def test_trianglesFromSubdivisionPoints():
             vertex(0, 3, 1),
         ],
     ) == fragment(*[
-               triangle(
-                   vertex(0, 0, 1),
-                   vertex(1, 0, 1),
-                   vertex(0, 1, 1),
-               ),
-               triangle(
-                   vertex(1, 0, 1),
-                   vertex(2, 0, 1),
-                   vertex(1, 1, 1),
-               ),
-               triangle(
-                   vertex(2, 0, 1),
-                   vertex(3, 0, 1),
-                   vertex(2, 1, 1),
-               ),
-               triangle(
-                   vertex(0, 1, 1),
-                   vertex(1, 1, 1),
-                   vertex(0, 2, 1),
-               ),
-               triangle(
-                   vertex(1, 1, 1),
-                   vertex(2, 1, 1),
-                   vertex(1, 2, 1),
-               ),
-               triangle(
-                   vertex(0, 2, 1),
-                   vertex(1, 2, 1),
-                   vertex(0, 3, 1),
-               ),
-               triangle(
-                   vertex(1, 0, 1),
-                   vertex(1, 1, 1),
-                   vertex(0, 1, 1),
-               ),
-               triangle(
-                   vertex(2, 0, 1),
-                   vertex(2, 1, 1),
-                   vertex(1, 1, 1),
-               ),
-               triangle(
-                   vertex(1, 1, 1),
-                   vertex(1, 2, 1),
-                   vertex(0, 2, 1),
-               ),
-           ])
+        triangle(
+            vertex(0, 0, 1),
+            vertex(1, 0, 1),
+            vertex(0, 1, 1),
+        ),
+        triangle(
+            vertex(1, 0, 1),
+            vertex(2, 0, 1),
+            vertex(1, 1, 1),
+        ),
+        triangle(
+            vertex(2, 0, 1),
+            vertex(3, 0, 1),
+            vertex(2, 1, 1),
+        ),
+        triangle(
+            vertex(0, 1, 1),
+            vertex(1, 1, 1),
+            vertex(0, 2, 1),
+        ),
+        triangle(
+            vertex(1, 1, 1),
+            vertex(2, 1, 1),
+            vertex(1, 2, 1),
+        ),
+        triangle(
+            vertex(0, 2, 1),
+            vertex(1, 2, 1),
+            vertex(0, 3, 1),
+        ),
+        triangle(
+            vertex(1, 0, 1),
+            vertex(1, 1, 1),
+            vertex(0, 1, 1),
+        ),
+        triangle(
+            vertex(2, 0, 1),
+            vertex(2, 1, 1),
+            vertex(1, 1, 1),
+        ),
+        triangle(
+            vertex(1, 1, 1),
+            vertex(1, 2, 1),
+            vertex(0, 2, 1),
+        ),
+    ])
