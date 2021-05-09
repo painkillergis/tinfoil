@@ -157,8 +157,8 @@ def hv1p():
                 [bottom[-t(i + 1)] for i in range(args.detail + 1)],
             ),
             wall(
-                [top[-1 - t(i)] for i in range(args.detail + 1)],
-                [bottom[-1 - t(i)] for i in range(args.detail + 1)],
+                [top[-1 - t(args.detail - i)] for i in range(args.detail + 1)],
+                [bottom[-1 - t(args.detail - i)] for i in range(args.detail + 1)],
             ),
         )),
     )
