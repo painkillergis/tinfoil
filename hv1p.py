@@ -138,32 +138,23 @@ def hv1p():
             ) for i in range(len(topEdges) - 1)
         ])
 
-    def wall1(top, bottom):
-        wall(
-            top[0:args.detail + 1],
-            bottom[0:args.detail + 1],
-        )
-
-    def wall2(top, bottom):
-        wall(
-            [top[-t(i + 1)] for i in range(args.detail + 1)],
-            [bottom[-t(i + 1)] for i in range(args.detail + 1)],
-        )
-
-    def wall3(top, bottom):
-        wall(
-            [top[-1 - t(i)] for i in range(args.detail + 1)],
-            [bottom[-1 - t(i)] for i in range(args.detail + 1)],
-        )
-
     models = pipeline(
         zip(tops, bottoms),
         unpack(lambda top, bottom: fragment(
             trianglesFromSubdivisionPoints(args.detail, top),
             trianglesFromSubdivisionPoints(args.detail, bottom, True),
-            wall1(top, bottom),
-            wall2(top, bottom),
-            wall3(top, bottom),
+            wall(
+                top[0:args.detail + 1],
+                bottom[0:args.detail + 1],
+            ),
+            wall(
+                [top[-t(i + 1)] for i in range(args.detail + 1)],
+                [bottom[-t(i + 1)] for i in range(args.detail + 1)],
+            ),
+            wall(
+                [top[-1 - t(i)] for i in range(args.detail + 1)],
+                [bottom[-1 - t(i)] for i in range(args.detail + 1)],
+            ),
         )),
     )
 
