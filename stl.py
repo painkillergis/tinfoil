@@ -26,7 +26,7 @@ class Renderable:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def render(self): raise NotImplementedError
+    def render(self, writable): raise NotImplementedError
 
     @abstractmethod
     def renderBinary(self, writable): raise NotImplementedError
@@ -36,8 +36,11 @@ class fragment(Renderable, EqualityMixin):
     def __init__(self, *children):
         self._children = children
 
-    def render(self):
-        return "\n".join(map(lambda child: child.render(), self._children))
+    def render(self, writable):
+        for index, child in enumerate(self._children):
+            child.render(writable)
+            if type(child) != fragment and index < len(self._children) - 1:
+                writable.write("\n")
 
     def renderBinary(self, writable):
         for child in self._children:
@@ -50,8 +53,8 @@ class vertex(Renderable, EqualityMixin):
         self.y = y
         self.z = z
 
-    def render(self):
-        return f"vertex {float(self.x)} {float(self.y)} {float(self.z)}"
+    def render(self, writable):
+        writable.write(f"vertex {float(self.x)} {float(self.y)} {float(self.z)}")
 
     def renderBinary(self, writable):
         pack = struct.Struct('<f').pack
@@ -93,20 +96,17 @@ class triangle(Renderable, EqualityMixin):
         self.v2 = v2
         self.v3 = v3
 
-    def render(self):
-        return f"""facet normal 0 0 0
-  outer loop
-    {self.v1.render()}
-    {self.v2.render()}
-    {self.v3.render()}
-  endloop
-endfacet"""
+    def render(self, writable):
+        writable.write("facet normal 0 0 0\nouter loop\n")
+        for v in [self.v1, self.v2, self.v3]:
+            v.render(writable)
+            writable.write(f"\n")
+        writable.write(f"endloop\nendfacet")
 
     def renderBinary(self, writable):
         vertex(0, 0, 0).renderBinary(writable)
-        self.v1.renderBinary(writable)
-        self.v2.renderBinary(writable)
-        self.v3.renderBinary(writable)
+        for v in [self.v1, self.v2, self.v3]:
+            v.renderBinary(writable)
         writable.write(bytearray(struct.pack("<h", 0)))
 
 
@@ -122,10 +122,10 @@ class solid(Renderable, EqualityMixin):
         self.name = name
         self.child = child
 
-    def render(self):
-        return f"""solid {self.name}
-{self.child.render()}
-endsolid {self.name}"""
+    def render(self, writable):
+        writable.write(f"solid {self.name}\n")
+        self.child.render(writable)
+        writable.write(f"\nendsolid {self.name}")
 
     def renderBinary(self, writable):
         writable.write(b''.join([b"\x00" for ignored in range(84)]))

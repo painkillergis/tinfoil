@@ -5,11 +5,14 @@ from stl import *
 
 
 class StubRenderable(Renderable):
-    def __init__(self, bytes):
-        self.bytes = bytes
+    def __init__(self, operand):
+        self.operand = operand
+
+    def render(self, writable):
+        writable.write(self.operand)
 
     def renderBinary(self, writable):
-        writable.write(self.bytes)
+        writable.write(self.operand)
 
 
 class StubWritable:
@@ -19,8 +22,17 @@ class StubWritable:
         self.bytes += bytes
 
 
+class StubAsciiWritable:
+    string = ''
+
+    def write(self, string):
+        self.string += string
+
+
 def test_vertex_render():
-    assert render(vertex(1, 2, 3)) == "vertex 1.0 2.0 3.0"
+    writable = StubAsciiWritable()
+    vertex(1, 2, 3).render(writable)
+    assert writable.string == "vertex 1.0 2.0 3.0"
 
 
 def test_vertex_render_binary():
@@ -74,18 +86,20 @@ def test_vertex_divide_unknown():
 
 
 def test_triangle_render():
-    assert render(
-        triangle(
-            vertex(1, 2, 3),
-            vertex(4, 5, 6),
-            vertex(7, 8, 9),
-        ),
-    ) == """facet normal 0 0 0
-  outer loop
-    vertex 1.0 2.0 3.0
-    vertex 4.0 5.0 6.0
-    vertex 7.0 8.0 9.0
-  endloop
+    writable = StubAsciiWritable()
+
+    triangle(
+        vertex(1, 2, 3),
+        vertex(4, 5, 6),
+        vertex(7, 8, 9),
+    ).render(writable)
+
+    assert writable.string == """facet normal 0 0 0
+outer loop
+vertex 1.0 2.0 3.0
+vertex 4.0 5.0 6.0
+vertex 7.0 8.0 9.0
+endloop
 endfacet"""
 
 
@@ -111,15 +125,11 @@ def test_quad():
 
 
 def test_solid_render():
-    class TestRenderable(Renderable):
-        def render(self):
-            return "TestRenderable"
+    writable = StubAsciiWritable()
 
-    assert solid(
-        "something",
-        TestRenderable(),
-    ).render() == """solid something
-TestRenderable
+    solid("something", StubRenderable("StubRenderable")).render(writable)
+    assert writable.string == """solid something
+StubRenderable
 endsolid something"""
 
 
@@ -133,12 +143,11 @@ def test_solid_render_binary():
 
 
 def test_fragment():
-    class TestRenderable(Renderable):
-        def render(self):
-            return "TestRenderable"
+    writable = StubAsciiWritable()
+    renderable = StubRenderable("StubRenderable")
 
-    assert fragment(TestRenderable(), fragment(TestRenderable())).render() == \
-           """TestRenderable\nTestRenderable"""
+    fragment(renderable, fragment(renderable)).render(writable)
+    assert writable.string == """StubRenderable\nStubRenderable"""
 
 
 def test_ladderSubdivideQuads():
