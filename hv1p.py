@@ -126,6 +126,8 @@ def hv1p():
         ))
     )
 
+    t = lambda x: int(x * (x + 1) / 2)
+
     def wall1(top, bottom):
         topEdges = top[0:args.detail + 1]
         bottomEdges = bottom[0:args.detail + 1]
@@ -139,8 +141,6 @@ def hv1p():
         ])
 
     def wall2(top, bottom):
-        t = lambda x: int(x * (x + 1) / 2)
-
         topEdges = [top[-t(i + 1)] for i in range(args.detail + 1)]
         bottomEdges = [bottom[-t(i + 1)] for i in range(args.detail + 1)]
         return fragment(*[
@@ -153,8 +153,6 @@ def hv1p():
         ])
 
     def wall3(top, bottom):
-        t = lambda x: int(x * (x + 1) / 2)
-
         topEdges = [top[-1 - t(i)] for i in range(args.detail + 1)]
         bottomEdges = [bottom[-1 - t(i)] for i in range(args.detail + 1)]
         return fragment(*[
