@@ -1,7 +1,6 @@
 import numbers
 import struct
 from abc import ABCMeta, abstractmethod
-from functools import reduce
 from math import cos, radians, sin, sqrt, floor
 
 
