@@ -11,6 +11,7 @@ parser.add_argument("source")
 parser.add_argument("destination")
 parser.add_argument("width", type=float)
 parser.add_argument("detail", type=int)
+parser.add_argument("--vertical-detail", type=int, default=1)
 parser.add_argument("--multiple-files", action='store_true')
 args = parser.parse_args()
 
@@ -127,14 +128,16 @@ def hv1p():
         ))
     )
 
-    def wall(topEdges, bottomEdges):
+    def wall(topEdge, bottomEdge):
         return fragment(*[
             quad(
-                bottomEdges[i],
-                bottomEdges[i + 1],
-                topEdges[i + 1],
-                topEdges[i],
-            ) for i in range(len(topEdges) - 1)
+                lerp(bottomEdge[x], topEdge[x], y, args.vertical_detail),
+                lerp(bottomEdge[x + 1], topEdge[x + 1], y, args.vertical_detail),
+                lerp(bottomEdge[x + 1], topEdge[x + 1], y + 1, args.vertical_detail),
+                lerp(bottomEdge[x], topEdge[x], y + 1, args.vertical_detail),
+            )
+            for y in range(args.vertical_detail)
+            for x in range(len(topEdge) - 1)
         ])
 
     def t(x):
