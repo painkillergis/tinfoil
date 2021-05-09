@@ -13,6 +13,7 @@ parser.add_argument("width", type=float)
 parser.add_argument("detail", type=int)
 parser.add_argument("--vertical-detail", type=int, default=1)
 parser.add_argument("--multiple-files", action='store_true')
+parser.add_argument("--ascii", action='store_true')
 args = parser.parse_args()
 
 a = args.width / 4
@@ -170,5 +171,10 @@ def hv1p():
 
 
 for solid in hv1p():
-    with open(args.destination.replace("%s", solid.name), 'w') as f:
-        f.write(render(solid))
+    path = args.destination.replace("%s", solid.name)
+    if args.ascii:
+        with open(path, 'w') as f:
+            solid.render(f)
+    else:
+        with open(path, 'wb') as f:
+            solid.renderBinary(f)
